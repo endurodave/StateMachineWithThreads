@@ -93,7 +93,7 @@ STATE_DEFINE(CentrifugeTest, Acceleration, NoEventData)
 	SelfTestEngine::InvokeStatusCallback("CentrifugeTest::ST_Acceleration");
 
 	// Start polling while waiting for centrifuge to ramp up to speed
-	m_pollTimer.Start(10);
+	m_pollTimer.Start(std::chrono::milliseconds(10));
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ STATE_DEFINE(CentrifugeTest, Deceleration, NoEventData)
 	SelfTestEngine::InvokeStatusCallback("CentrifugeTest::ST_Deceleration");
 
 	// Start polling while waiting for centrifuge to ramp down to 0
-	m_pollTimer.Start(10);
+	m_pollTimer.Start(std::chrono::milliseconds(10));
 }
 
 //------------------------------------------------------------------------------

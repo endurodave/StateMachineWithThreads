@@ -2,8 +2,7 @@
 #define _TIMER_H
 
 #include "AsyncCallback.h"
-#include "LockGuard.h"
-#include <time.h>
+#include <mutex>
 #include <list>
 
 /// @brief A timer class provides periodic timer callbacks on the client's 
@@ -11,8 +10,6 @@
 class Timer 
 {
 public:
-	static const DWORD MS_PER_TICK;
-
 	/// An expired callback client's register with to get callbacks
 	AsyncCallback<> Expired;
 
@@ -24,28 +21,27 @@ public:
 
 	/// Starts a timer for callbacks on the specified timeout interval.
 	/// @param[in]	timeout - the timeout in milliseconds.
-	void Start(DWORD timeout);
+	void Start(std::chrono::milliseconds timeout);
 
 	/// Stops a timer.
 	void Stop();
 
 	/// Gets the enabled state of a timer.
 	/// @return		TRUE if the timer is enabled, FALSE otherwise.
-	BOOL Enabled() { return m_enabled; }
+	bool Enabled() { return m_enabled; }
 
 	/// Get the current time in ticks. 
 	/// @return The current time in ticks. 
-	static DWORD GetTime() { return GetTickCount(); } 
+    static std::chrono::milliseconds GetTime();
 
 	/// Computes the time difference in ticks between two tick values taking into
 	/// account rollover.
 	/// @param[in] 	time1 - time stamp 1 in ticks.
 	/// @param[in] 	time2 - time stamp 2 in ticks.
 	/// @return		The time difference in ticks.
-	static DWORD Difference(DWORD time1, DWORD time2);
+	static std::chrono::milliseconds Difference(std::chrono::milliseconds time1, std::chrono::milliseconds time2);
 
-	/// Called on a periodic basic to service all timer instances. Must be
-	/// called by a single thread of control.
+	/// Called on a periodic basic to service all timer instances. 
 	static void ProcessTimers();
 
 private:
@@ -61,15 +57,12 @@ private:
 	typedef std::list<Timer*>::iterator TimersIterator;
 
 	/// A lock to make this class thread safe.
-	static LOCK m_lock;
+	static std::mutex m_lock;
 
-	/// TRUE if lock initialized.
-	static BOOL m_lockInit;
-
-	DWORD m_timeout;		// in ticks
-	DWORD m_expireTime;		// in ticks
-	BOOL m_enabled;
-	static BOOL m_timerStopped;
+	std::chrono::milliseconds m_timeout = std::chrono::milliseconds(0);		
+	std::chrono::milliseconds m_expireTime = std::chrono::milliseconds(0);
+	bool m_enabled = false;
+	static bool m_timerStopped;
 };
 
 #endif

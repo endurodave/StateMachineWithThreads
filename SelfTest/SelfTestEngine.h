@@ -6,6 +6,7 @@
 #include "PressureTest.h"
 #include "WorkerThread.h"
 #include "AsyncCallback.h"
+#include <string>
 
 struct SelfTestStatus
 {

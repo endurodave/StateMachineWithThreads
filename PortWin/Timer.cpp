@@ -1,14 +1,12 @@
-#include "stdafx.h"
 #include "Timer.h"
 #include "Fault.h"
+#include <chrono>
 
 using namespace std;
 
-LOCK Timer::m_lock;
-BOOL Timer::m_lockInit = FALSE;
-BOOL Timer::m_timerStopped = FALSE;
+std::mutex Timer::m_lock;
+bool Timer::m_timerStopped = false;
 list<Timer*> Timer::m_timers;
-const DWORD Timer::MS_PER_TICK = (1000 / CLOCKS_PER_SEC);
 
 //------------------------------------------------------------------------------
 // TimerDisabled
@@ -23,15 +21,8 @@ static bool TimerDisabled (Timer* value)
 //------------------------------------------------------------------------------
 Timer::Timer() 
 {
-	// Create the thread mutex
-	if (m_lockInit == FALSE)
-	{
-		LockGuard::Create(&m_lock);
-		m_lockInit = TRUE;
-	}
-
-	LockGuard lockGuard(&m_lock);
-	m_enabled = FALSE;
+	const std::lock_guard<std::mutex> lock(m_lock);
+	m_enabled = false;
 }
 
 //------------------------------------------------------------------------------
@@ -39,21 +30,21 @@ Timer::Timer()
 //------------------------------------------------------------------------------
 Timer::~Timer()
 {
-	LockGuard lockGuard(&m_lock);
+	const std::lock_guard<std::mutex> lock(m_lock);
 	m_timers.remove(this);
 }
 
 //------------------------------------------------------------------------------
 // Start
 //------------------------------------------------------------------------------
-void Timer::Start(DWORD timeout)
+void Timer::Start(std::chrono::milliseconds timeout)
 {
-	LockGuard lockGuard(&m_lock);
+	const std::lock_guard<std::mutex> lock(m_lock);
 
-	m_timeout = timeout / MS_PER_TICK;
-    ASSERT_TRUE(m_timeout != 0);
-	m_expireTime = GetTickCount();
-	m_enabled = TRUE;
+	m_timeout = timeout;
+    ASSERT_TRUE(m_timeout != std::chrono::milliseconds(0));
+	m_expireTime = GetTime();
+	m_enabled = true;
 
 	// Remove the existing entry, if any, to prevent duplicates in the list
 	m_timers.remove(this);
@@ -67,10 +58,10 @@ void Timer::Start(DWORD timeout)
 //------------------------------------------------------------------------------
 void Timer::Stop()
 {
-	LockGuard lockGuard(&m_lock);
+	const std::lock_guard<std::mutex> lock(m_lock);
 
-	m_enabled = FALSE;
-	m_timerStopped = TRUE;
+	m_enabled = false;
+	m_timerStopped = true;
 }
 
 //------------------------------------------------------------------------------
@@ -82,17 +73,17 @@ void Timer::CheckExpired()
 		return;
 
 	// Has the timer expired?
-    if (Difference(m_expireTime, GetTickCount()) < m_timeout)
+    if (Difference(m_expireTime, GetTime()) < m_timeout)
         return;
 
     // Increment the timer to the next expiration
 	m_expireTime += m_timeout;
 
 	// Is the timer already expired after we incremented above?
-    if (Difference(m_expireTime, GetTickCount()) > m_timeout)
+    if (Difference(m_expireTime, GetTime()) > m_timeout)
 	{
 		// The timer has fallen behind so set time expiration further forward.
-		m_expireTime = GetTickCount();
+		m_expireTime = GetTime();
 	}
 
 	// Call the client's expired callback function
@@ -103,7 +94,7 @@ void Timer::CheckExpired()
 //------------------------------------------------------------------------------
 // Difference
 //------------------------------------------------------------------------------
-DWORD Timer::Difference(DWORD time1, DWORD time2)
+std::chrono::milliseconds Timer::Difference(std::chrono::milliseconds time1, std::chrono::milliseconds time2)
 {
 	return (time2 - time1);
 }
@@ -113,13 +104,13 @@ DWORD Timer::Difference(DWORD time1, DWORD time2)
 //------------------------------------------------------------------------------
 void Timer::ProcessTimers()
 {
-	LockGuard lockGuard(&m_lock);
+	const std::lock_guard<std::mutex> lock(m_lock);
 
 	// Remove disabled timer from the list if stopped
 	if (m_timerStopped)
 	{
 		m_timers.remove_if(TimerDisabled);
-		m_timerStopped = FALSE;
+		m_timerStopped = false;
 	}
 
 	// Iterate through each timer and check for expirations
@@ -129,5 +120,12 @@ void Timer::ProcessTimers()
 		if ((*it) != NULL)
 			(*it)->CheckExpired();
 	}
+}
+
+std::chrono::milliseconds Timer::GetTime()
+{
+	auto duration = std::chrono::system_clock::now().time_since_epoch();
+	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+	return millis;
 }
 
