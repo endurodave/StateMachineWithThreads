@@ -1,3 +1,5 @@
+// @see https://github.com/endurodave/StateMachine
+
 #include "StateMachine.h"
 
 //----------------------------------------------------------------------------
