@@ -6,7 +6,6 @@
 AsyncCallbackBase::AsyncCallbackBase() :
 	m_invocationHead(NULL)
 {
-	LockGuard::Create(&m_lock);
 }
 
 //------------------------------------------------------------------------------
@@ -14,7 +13,6 @@ AsyncCallbackBase::AsyncCallbackBase() :
 //------------------------------------------------------------------------------
 AsyncCallbackBase::~AsyncCallbackBase()
 {
-	LockGuard::Destroy(&m_lock);
 }
 
 //------------------------------------------------------------------------------
@@ -22,7 +20,7 @@ AsyncCallbackBase::~AsyncCallbackBase()
 //------------------------------------------------------------------------------
 void AsyncCallbackBase::Register(Callback::CallbackFunc func, CallbackThread* thread, void* userData)
 {
-	LockGuard lockGuard(&m_lock);
+	const std::lock_guard<std::mutex> lock(m_lock);
 	
 	InvocationNode* node = new InvocationNode();
 	node->CallbackElement = new Callback(func, thread, userData);
@@ -50,7 +48,7 @@ void AsyncCallbackBase::Register(Callback::CallbackFunc func, CallbackThread* th
 //------------------------------------------------------------------------------
 void AsyncCallbackBase::Unregister(Callback::CallbackFunc func, CallbackThread* thread, void* userData)
 {
-	LockGuard lockGuard(&m_lock);
+	const std::lock_guard<std::mutex> lock(m_lock);
 	
 	// Iterate over list to find callback to remove
 	InvocationNode* curr = m_invocationHead;
@@ -81,7 +79,8 @@ void AsyncCallbackBase::Unregister(Callback::CallbackFunc func, CallbackThread* 
 //------------------------------------------------------------------------------
 void AsyncCallbackBase::Clear()
 {
-	LockGuard lockGuard(&m_lock);	
+	const std::lock_guard<std::mutex> lock(m_lock);
+
 	while (m_invocationHead)
 	{
 		InvocationNode* curr = m_invocationHead;

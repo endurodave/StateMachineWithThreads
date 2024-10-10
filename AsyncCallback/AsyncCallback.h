@@ -42,7 +42,7 @@ public:
 	///		argument.
 	void Invoke(const TData& data) 
 	{
-		LockGuard lockGuard(GetLock());
+		const std::lock_guard<std::mutex> lock(GetLock());
 
 		// For each registered callback 
 		InvocationNode* node = GetInvocationHead();

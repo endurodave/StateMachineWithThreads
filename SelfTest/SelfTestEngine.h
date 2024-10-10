@@ -4,7 +4,7 @@
 #include "SelfTest.h"
 #include "CentrifugeTest.h"
 #include "PressureTest.h"
-#include "WorkerThread.h"
+#include "WorkerThreadStd.h"
 #include "AsyncCallback.h"
 #include <string>
 

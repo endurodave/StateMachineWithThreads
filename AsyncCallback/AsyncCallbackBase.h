@@ -3,8 +3,8 @@
 
 #include "Fault.h"
 #include "Callback.h"
-#include "LockGuard.h"
 #include "CallbackMsg.h"
+#include <mutex>
 
 /// @brief A non-template base class for the async callbacks. This class is 
 /// thread-safe.
@@ -51,7 +51,7 @@ protected:
 
 	/// Get the software lock.
 	/// @return The software lock instance.
-	LOCK* GetLock() { return &m_lock; }
+	std::mutex& GetLock() { return m_lock; }
 
 private:
 	// Safe bool idiom
@@ -70,7 +70,7 @@ private:
 	InvocationNode* m_invocationHead;
 
 	/// Lock to make the class thead-safe
-	LOCK m_lock;
+	std::mutex m_lock;
 };
 
 #endif

@@ -1,7 +1,16 @@
-#include "WorkerThread.h"
 #include "AsyncCallback.h"
 #include "SelfTestEngine.h"
 #include <iostream>
+#include <chrono>
+
+// main.cpp
+// @see https://github.com/endurodave/StateMachineWithThreads
+// David Lafreniere, Aug 2020.
+
+// Other related respositories:
+// https://github.com/endurodave/StateMachineWithDelegates
+// https://github.com/endurodave/C_StateMachineWithThreads
+// https://github.com/endurodave/C_StateMachine
 
 using namespace std;
 
@@ -41,15 +50,12 @@ int main(void)
 	SelfTestEngine::StatusCallback.Register(&SelfTestEngineStatusCallback, &userInterfaceThread);
 	SelfTestEngine::GetInstance().CompletedCallback.Register(&SelfTestEngineCompleteCallback, &userInterfaceThread);
 
-	// Start the worker threads
-	ThreadWin::StartAllThreads();
-
 	// Start self-test engine
 	SelfTestEngine::GetInstance().Start();
 
 	// Wait for self-test engine to complete 
 	while (!selfTestEngineCompleted)
-		Sleep(10);
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 	// Exit the worker threads
 	userInterfaceThread.ExitThread();
