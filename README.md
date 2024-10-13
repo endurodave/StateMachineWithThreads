@@ -3,6 +3,8 @@ A framework combining C++ state machines and multicast asynchronous callbacks.
 
 Originally published on CodeProject at: <a href="https://www.codeproject.com/Articles/1156423/Cplusplus-State-Machine-with-Threads"><strong>C++ State Machine with Threads</strong></a>
 
+<p><a href="https://www.cmake.org/">CMake</a>&nbsp;is used to create the build files. CMake is free and open-source software. Windows, Linux and other toolchains are supported. See the <strong>CMakeLists.txt </strong>file for more information.</p>
+
 <h2>Introduction</h2>
 
 <p>A software-based Finite State Machines (FSM) is an implementation method used to decompose a design into states and events. Simple embedded devices with no operating system employ single threading such that the state machines run on a single &ldquo;thread&rdquo;. More complex systems use multithreading to divvy up the processing.</p>
@@ -354,8 +356,8 @@ void SelfTestEngineCompleteCallback(const NoData&amp; data, void* userData)
 <h2>References</h2>
 
 <ul>
-	<li><strong><a href="http://www.codeproject.com/Articles/1087619/State-Machine-Design-in-Cplusplus">State Machine Design in C++</a></strong> - by David Lafreniere</li>
-	<li><strong><a href="http://www.codeproject.com/Articles/1092727/Asynchronous-Multicast-Callbacks-with-Inter-Thread">Asynchronous Multicast Callbacks with Inter-Thread Messaging</a></strong> - by David Lafreniere</li>
+	<li><strong><a href="https://github.com/endurodave/StateMachine">State Machine Design in C++</a></strong> - by David Lafreniere</li>
+	<li><strong><a href="https://github.com/endurodave/AsyncCallback">Asynchronous Multicast Callbacks with Inter-Thread Messaging</a></strong> - by David Lafreniere</li>
 </ul>
 
 <h2>Conclusion</h2>
