@@ -1,18 +1,41 @@
 # C++ State Machine with Threads
+
 A framework combining C++ state machines and multicast asynchronous callbacks.
+
+# Table of Contents
+
+- [C++ State Machine with Threads](#c-state-machine-with-threads)
+- [Table of Contents](#table-of-contents)
+- [Preface](#preface)
+  - [Related Repositories](#related-repositories)
+- [Introduction](#introduction)
+- [Self-Test Subsystem](#self-test-subsystem)
+- [Asynchronous Callbacks](#asynchronous-callbacks)
+  - [SelfTestEngine](#selftestengine)
+  - [CentrifugeTest](#centrifugetest)
+  - [Timer](#timer)
+- [Poll Events](#poll-events)
+- [Connecting Callbacks to Event Functions](#connecting-callbacks-to-event-functions)
+- [User Interface](#user-interface)
+- [Run-Time](#run-time)
+- [References](#references)
+- [Conclusion](#conclusion)
+
+
+# Preface
 
 Originally published on CodeProject at: <a href="https://www.codeproject.com/Articles/1156423/Cplusplus-State-Machine-with-Threads"><strong>C++ State Machine with Threads</strong></a>
 
 <p><a href="https://www.cmake.org/">CMake</a>&nbsp;is used to create the build files. CMake is free and open-source software. Windows, Linux and other toolchains are supported. See the <strong>CMakeLists.txt </strong>file for more information.</p>
 
-<p>Related GitHub repositories:</p>
+## Related Repositories
 
 <ul>
     <li><a href="https://github.com/endurodave/StateMachineWithModernDelegates">C++ State Machine with Modern Asynchronous Multicast Delegates</a> - by David Lafreniere</li>
 	<li><a href="https://github.com/endurodave/StateMachineWithDelegates">C++ State Machine with Asynchronous Multicast Delegates</a> - by David Lafreniere</li>
 </ul>
 
-<h2>Introduction</h2>
+# Introduction
 
 <p>A software-based Finite State Machines (FSM) is an implementation method used to decompose a design into states and events. Simple embedded devices with no operating system employ single threading such that the state machines run on a single &ldquo;thread&rdquo;. More complex systems use multithreading to divvy up the processing.</p>
 
@@ -26,7 +49,7 @@ Originally published on CodeProject at: <a href="https://www.codeproject.com/Art
 
 <p>Visual Studio 2008 and 2015 projects are included for easy experimentation. While the Windows operating system provides threads, locks, message queues, and timers, the code is partitioned for easy porting to other embedded or PC-based systems.</p>
 
-<h2>Self-Test Subsystem</h2>
+# Self-Test Subsystem
 
 <p>Self-tests execute a series of tests on hardware and mechanical systems to ensure correct operation. In this example, there are four state machine classes implementing our self-test subsystem as shown in the inheritance diagram below:</p>
 
@@ -34,7 +57,7 @@ Originally published on CodeProject at: <a href="https://www.codeproject.com/Art
 
 <p style="text-align: center"><strong>Figure 1: Self-Test Subsystem Inheritance Diagram</strong></p>
 
-<h2>Asynchronous Callbacks</h2>
+# Asynchronous Callbacks
 
 <p>The <code>AsyncCallback&lt;&gt;</code> class is used throughout to provide asynchronous callbacks. The first place it&#39;s used is within the <code>SelfTest</code> class. Whenever a self-test completes a <code>SelfTest::CompletedCallback</code> callback is invoked notifying&nbsp;registered clients. <code>SelfTestEngine </code>registers with both&nbsp;<code>CentrifugeTest </code>and <code>PressureTest </code>to get informed when the test is complete.</p>
 
@@ -42,7 +65,7 @@ Originally published on CodeProject at: <a href="https://www.codeproject.com/Art
 
 <p>The final location is within the <code>Timer</code> class which fires periodic callbacks on a registered callback function. A generic, low-speed timer capable of calling a function on the client-specified thread is quite useful for event driven state machines where you might want to poll for some condition to occur. In this case, the <code>Timer</code> class is used to inject poll events into the state machine instances.</p>
 
-<h2>SelfTestEngine</h2>
+## SelfTestEngine
 
 <p><code>SelfTestEngine</code> is thread-safe and the main point of contact for client&rsquo;s utilizing the self-test subsystem. <code>CentrifugeTest</code> and <code>PressureTest</code> are members of <code>SelfTestEngine</code>. <code>SelfTestEngine</code> is responsible for sequencing the individual self-tests in the correct order as shown in the state diagram below. &nbsp;</p>
 
@@ -178,7 +201,7 @@ STATE_DEFINE(SelfTest, Failed, NoEventData)
 
 <p>One might ask why the state machines use asynchronous callbacks. If the state machines are on the same thread, why not use a normal, synchronous callback instead? The problem to prevent is a callback into a currently executing state machine, that is, the call stack wrapping back around into the same class instance. For example, the following call sequence should be prevented: <code>SelfTestEngine</code> calls <code>CentrifugeTest</code> calls back <code>SelfTestEngine</code>. An asynchronous callback allows the stack to unwind and prevents this unwanted behavior.</p>
 
-<h2>CentrifugeTest</h2>
+## CentrifugeTest
 
 <p>The <code>CentrifugeTest</code> state machine diagram show below implements the centrifuge self-test described in &quot;<a href="https://www.codeproject.com/Articles/1087619/State-Machine-Design-in-Cplusplus"><b>State Machine Design in C++</b></a>&quot;. The difference here is that the <code>Timer</code> class is used to provide <code>Poll</code> events via asynchronous callbacks.</p>
 
@@ -186,7 +209,7 @@ STATE_DEFINE(SelfTest, Failed, NoEventData)
 
 <p style="text-align: center"><strong>Figure 3: CentrifugeTest State Machine</strong></p>
 
-<h2>Timer</h2>
+## Timer
 
 <p>The <code>Timer</code> class provides a common mechanism to receive function callbacks by registering with <code>Expired</code>. <code>Start()</code> starts the callbacks at a particular interval. <code>Stop()</code> stops the callbacks.</p>
 
@@ -215,7 +238,7 @@ public:
                 Timer::ProcessTimers();
                 break;</pre>
 
-<h2>Poll Events</h2>
+# Poll Events
 
 <p><code>CentrifugeTest</code> has a <code>Timer</code> instance and registers for callbacks. The callback function, a thread instance and a <code>this</code> pointer is provided to <code>Register()</code> facilitating the asynchronous callback mechanism.</p>
 
@@ -248,7 +271,7 @@ STATE_DEFINE(CentrifugeTest, Acceleration, NoEventData)
     m_pollTimer.Start(10);
 }</pre>
 
-<h2>Connecting Callbacks to Event Functions</h2>
+# Connecting Callbacks to Event Functions
 
 <p>The <code>AsyncCallback&lt;&gt;</code> mechanism is able to invoke a static member function or a free function. However, state machine events are implemented using instance member functions. The key to connecting the two is the <code>CALLBACK_DECLARE</code> and <code>CALLBACK_DECLARE_NO_DATA</code> macros.</p>
 
@@ -285,7 +308,7 @@ CALLBACK_DECLARE(MyStateMachine, MyEventFunc, MyEventFuncData)</pre>
 
 <p>Of course you could do all this without the multiline macro, but it cleans up monotonous code that would otherwise be propagated throughout the project.</p>
 
-<h2>User Interface</h2>
+# User Interface
 
 <p>The project doesn&rsquo;t have a user interface except the text console output. For this example, the &ldquo;user interface&rdquo; just outputs self-test status messages on the user interface thread via the <code>SelfTestEngineStatusCallback()</code> function:</p>
 
@@ -305,7 +328,7 @@ SelfTestEngine::StatusCallback.Register(&amp;SelfTestEngineStatusCallback, &amp;
 
 <p>The user interface thread here is just used to simulate callbacks to a GUI library normally running in a separate thread of control.</p>
 
-<h2>Run-Time</h2>
+# Run-Time
 
 <p>The program&rsquo;s <code>main()</code> function is shown below. It creates the two threads, registers for callbacks from <code>SelfTestEngine</code>, then calls <code>Start()</code> to start the self-tests.</p>
 
@@ -360,14 +383,14 @@ void SelfTestEngineCompleteCallback(const NoData&amp; data, void* userData)
 
 <p style="text-align: center"><strong>Figure 4: Console Output</strong></p>
 
-<h2>References</h2>
+# References
 
 <ul>
 	<li><strong><a href="https://github.com/endurodave/StateMachine">State Machine Design in C++</a></strong> - by David Lafreniere</li>
 	<li><strong><a href="https://github.com/endurodave/AsyncCallback">Asynchronous Multicast Callbacks with Inter-Thread Messaging</a></strong> - by David Lafreniere</li>
 </ul>
 
-<h2>Conclusion</h2>
+# Conclusion
 
 <p>The <code>StateMachine</code> and <code>AsycCallback&lt;&gt;</code> implementations can be used separately. Each is useful unto itself. However, combining the two offers a novel framework for multithreaded state-driven application development. The article has shown how to coordinate the behavior of state machines when multiple threads are used,&nbsp;which may not be entirely obvious when looking at simplistic, single threaded examples.</p>
 
