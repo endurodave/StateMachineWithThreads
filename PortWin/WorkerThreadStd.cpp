@@ -15,7 +15,7 @@ using namespace std;
 //----------------------------------------------------------------------------
 // WorkerThread
 //----------------------------------------------------------------------------
-WorkerThread::WorkerThread(const char* threadName) : m_thread(nullptr), m_timerExit(false), THREAD_NAME(threadName)
+WorkerThread::WorkerThread(const std::string& threadName) : m_thread(nullptr), m_timerExit(false), THREAD_NAME(threadName)
 {
 }
 

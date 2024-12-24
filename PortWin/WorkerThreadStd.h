@@ -10,6 +10,7 @@
 #include <mutex>
 #include <atomic>
 #include <condition_variable>
+#include <string>
 
 class ThreadMsg;
 
@@ -17,7 +18,7 @@ class WorkerThread : public CallbackThread
 {
 public:
 	/// Constructor
-	WorkerThread(const char* threadName);
+	WorkerThread(const std::string& threadName);
 
 	/// Destructor
 	~WorkerThread();
