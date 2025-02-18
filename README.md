@@ -13,7 +13,7 @@ A framework combining C++ state machines and multicast asynchronous callbacks.
 - [Table of Contents](#table-of-contents)
 - [Preface](#preface)
 - [Introduction](#introduction)
-  - [Alternate Implementation](#alternate-implementation)
+  - [Alternate Implementations](#alternate-implementations)
 - [Self-Test Subsystem](#self-test-subsystem)
 - [Asynchronous Callbacks](#asynchronous-callbacks)
   - [SelfTestEngine](#selftestengine)
@@ -45,11 +45,16 @@ Originally published on CodeProject at: <a href="https://www.codeproject.com/Art
 
 <p>I won&rsquo;t be re-explaining the <code>StateMachine </code>and <code>AsyncCallback&lt;&gt;</code> implementations as the prior articles do that already. The primary focus is on how to combine the state machine and asynchronous callbacks into a single framework.</p>
 
-## Alternate Implementation
+## Alternate Implementations
 
-Related repository using <code>StateMachine</code> with a C++ asynchronous delegate library (DelegateMQ) instead of asynchronous callbacks (`AsyncCallback<>`).
+Related repository using <code>StateMachine</code> class with a C++ asynchronous delegate library (DelegateMQ).
 <ul>
-    <li><a href="https://github.com/endurodave/StateMachineWithModernDelegates">C++ State Machine with Modern Asynchronous Multicast Delegates</a> - by David Lafreniere</li>
+    <li><a href="https://github.com/endurodave/StateMachineWithModernDelegates">C++ State Machine with Modern Asynchronous Multicast Delegates</a></li>
+</ul>
+
+Related repository using a C language state machine with threads.
+<ul>
+    <li><a href="https://github.com/endurodave/C_StateMachineWithThreads">C Language State Machine with Threads</a></li>
 </ul>
 
 # Self-Test Subsystem
