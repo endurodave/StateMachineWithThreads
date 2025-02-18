@@ -12,8 +12,8 @@ A framework combining C++ state machines and multicast asynchronous callbacks.
 - [C++ State Machine with Threads](#c-state-machine-with-threads)
 - [Table of Contents](#table-of-contents)
 - [Preface](#preface)
-  - [Related Repositories](#related-repositories)
 - [Introduction](#introduction)
+  - [Alternate Implementation](#alternate-implementation)
 - [Self-Test Subsystem](#self-test-subsystem)
 - [Asynchronous Callbacks](#asynchronous-callbacks)
   - [SelfTestEngine](#selftestengine)
@@ -33,26 +33,24 @@ Originally published on CodeProject at: <a href="https://www.codeproject.com/Art
 
 <p><a href="https://www.cmake.org/">CMake</a>&nbsp;is used to create the build files. CMake is free and open-source software. Windows, Linux and other toolchains are supported. See the <strong>CMakeLists.txt </strong>file for more information.</p>
 
-## Related Repositories
-
-<ul>
-    <li><a href="https://github.com/endurodave/StateMachineWithModernDelegates">C++ State Machine with Modern Asynchronous Multicast Delegates</a> - by David Lafreniere</li>
-	<li><a href="https://github.com/endurodave/StateMachineWithDelegates">C++ State Machine with Asynchronous Multicast Delegates</a> - by David Lafreniere</li>
-</ul>
-
 # Introduction
 
 <p>A software-based Finite State Machines (FSM) is an implementation method used to decompose a design into states and events. Simple embedded devices with no operating system employ single threading such that the state machines run on a single &ldquo;thread&rdquo;. More complex systems use multithreading to divvy up the processing.</p>
 
-<p>Many FSM implementations exist including one I wrote about here on Code Project entitled &ldquo;<strong><a href="http://www.codeproject.com/Articles/1087619/State-Machine-Design-in-Cplusplus">State Machine Design in C++</a></strong>&rdquo;. The article covers how to create C++ state machines using the <code>StateMachine</code> base class. What is missing, however, is how to integrate multiple state machines into the context of a multithreaded environment.</p>
+<p>Many FSM implementations exist including my repository &ldquo;<strong><a href="https://github.com/endurodave/StateMachine">State Machine Design in C++</a></strong>&rdquo;. The article covers how to create C++ state machines using the <code>StateMachine</code> base class. What is missing, however, is how to integrate multiple state machines into the context of a multithreaded environment.</p>
 
-<p>&ldquo;<strong><a href="http://www.codeproject.com/Articles/1092727/Asynchronous-Multicast-Callbacks-with-Inter-Thread">Asynchronous Multicast Callbacks with Inter-Thread Messaging</a></strong>&rdquo; is another article I wrote on Code Project. This design provides a simple, portable callback mechanism that handles the low-level details of asynchronously invoking a callback with event data on a client-specified thread of control.</p>
+<p>&ldquo;<strong><a href="https://github.com/endurodave/AsyncCallback">Asynchronous Multicast Callbacks with Inter-Thread Messaging</a></strong>&rdquo; is another repository. This design provides a simple, portable callback mechanism that handles the low-level details of asynchronously invoking a callback with event data on a client-specified thread of control.</p>
 
 <p>This article combines the two previously described techniques, state machines and asynchronous callbacks, into a single project. In the previous articles, it may not be readily apparent using simple examples how multiple state machines coordinate activities and dispatch events to each other. The goal for the article is to provide a complete working project with threads, timers, events, and state machines all working together. To illustrate the concept, the example project implements a state-based self-test engine utilizing asynchronous communication between threads.</p>
 
 <p>I won&rsquo;t be re-explaining the <code>StateMachine </code>and <code>AsyncCallback&lt;&gt;</code> implementations as the prior articles do that already. The primary focus is on how to combine the state machine and asynchronous callbacks into a single framework.</p>
 
-<p>Visual Studio 2008 and 2015 projects are included for easy experimentation. While the Windows operating system provides threads, locks, message queues, and timers, the code is partitioned for easy porting to other embedded or PC-based systems.</p>
+## Alternate Implementation
+
+Related repository using <code>StateMachine</code> with a C++ asynchronous delegate library (DelegateMQ) instead of asynchronous callbacks (`AsyncCallback<>`).
+<ul>
+    <li><a href="https://github.com/endurodave/StateMachineWithModernDelegates">C++ State Machine with Modern Asynchronous Multicast Delegates</a> - by David Lafreniere</li>
+</ul>
 
 # Self-Test Subsystem
 
@@ -393,6 +391,7 @@ void SelfTestEngineCompleteCallback(const NoData&amp; data, void* userData)
 <ul>
 	<li><strong><a href="https://github.com/endurodave/StateMachine">State Machine Design in C++</a></strong> - by David Lafreniere</li>
 	<li><strong><a href="https://github.com/endurodave/AsyncCallback">Asynchronous Multicast Callbacks with Inter-Thread Messaging</a></strong> - by David Lafreniere</li>
+    <li><strong><a href="https://github.com/endurodave/C_StateMachine">State Machine Design in C</a></strong> - by David Lafreniere</li>
 </ul>
 
 # Conclusion
