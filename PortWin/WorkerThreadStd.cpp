@@ -114,7 +114,7 @@ void WorkerThread::TimerThread()
 {
     while (!m_timerExit)
     {
-        std::this_thread::sleep_for(100ms);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 		ThreadMsg* threadMsg = new ThreadMsg(MSG_TIMER, 0);
 
