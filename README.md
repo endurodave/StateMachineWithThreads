@@ -7,11 +7,13 @@
 
 A framework combining C++ state machines and multicast asynchronous callbacks.
 
+Originally published on CodeProject at: <a href="https://www.codeproject.com/Articles/1156423/Cplusplus-State-Machine-with-Threads"><strong>C++ State Machine with Threads</strong></a>
+
 # Table of Contents
 
 - [C++ State Machine with Threads](#c-state-machine-with-threads)
 - [Table of Contents](#table-of-contents)
-- [Preface](#preface)
+- [Getting Started](#getting-started)
 - [Introduction](#introduction)
   - [Alternate Implementations](#alternate-implementations)
 - [Self-Test Subsystem](#self-test-subsystem)
@@ -26,12 +28,14 @@ A framework combining C++ state machines and multicast asynchronous callbacks.
 - [References](#references)
 - [Conclusion](#conclusion)
 
+# Getting Started
 
-# Preface
+To build and run the project, follow these simple steps. The library uses <a href="https://www.cmake.org">CMake</a> to generate build files and supports Visual Studio, GCC, and Clang toolchains.
 
-Originally published on CodeProject at: <a href="https://www.codeproject.com/Articles/1156423/Cplusplus-State-Machine-with-Threads"><strong>C++ State Machine with Threads</strong></a>
-
-<p><a href="https://www.cmake.org/">CMake</a>&nbsp;is used to create the build files. CMake is free and open-source software. Windows, Linux and other toolchains are supported. See the <strong>CMakeLists.txt </strong>file for more information.</p>
+1. Clone the repository.
+2. From the repository root, run the following CMake command:   
+   `cmake -B Build .`
+3. Build and run the project within the `Build` directory. 
 
 # Introduction
 
@@ -47,15 +51,11 @@ Originally published on CodeProject at: <a href="https://www.codeproject.com/Art
 
 ## Alternate Implementations
 
-Related repository using <code>StateMachine</code> class with a C++ asynchronous delegate library (DelegateMQ).
-<ul>
-    <li><a href="https://github.com/endurodave/StateMachineWithModernDelegates">C++ State Machine with Modern Asynchronous Multicast Delegates</a></li>
-</ul>
+Alternative C and C++ state machines libraries combined with OS threads.
 
-Related repository using a C language state machine with threads.
-<ul>
-    <li><a href="https://github.com/endurodave/C_StateMachineWithThreads">C Language State Machine with Threads</a></li>
-</ul>
+* <a href="https://github.com/endurodave/C_StateMachineWithThreads">C Language State Machine with Threads</a> - A C language state machine using asynchronous callbacks.
+* <a href="https://github.com/endurodave/StateMachineWithModernDelegates">C++ State Machine with Asynchronous Delegates</a> - A C++ state machine using asynchronous delegate callbacks.
+* <a href="https://github.com/endurodave/AsyncStateMachine">Asynchronous C++ State Machine</a> - A C++ state machine implemented as an active object, executing in its own thread of control.
 
 # Self-Test Subsystem
 
