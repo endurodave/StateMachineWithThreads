@@ -125,7 +125,7 @@ void Timer::ProcessTimers()
 
 std::chrono::milliseconds Timer::GetTime()
 {
-	auto duration = std::chrono::system_clock::now().time_since_epoch();
+	auto duration = std::chrono::steady_clock::now().time_since_epoch();
 	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
 	return millis;
 }
